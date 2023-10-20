@@ -1,35 +1,55 @@
-import InvestmentForm from "./components/InvestmentForm";
-import MainHeader from "./components/MainHeader";
-import ResultsTable from "./components/ResultsTable";
+import { useState } from 'react';
 
-import { UserInput } from './types';
+import InvestmentForm from './components/InvestmentForm';
+import MainHeader from './components/MainHeader';
+import ResultsTable from './components/ResultsTable';
 
-const dummyUserInput = {
-  'current-savings': '1000',
-  'yearly-contribution': '1000',
-  'expected-return': '5',
-  duration: '10',
-};
-
+const INITIAL_STATE = [
+  {
+    currentSavings: '10000',
+    yearlyContribution: '1200',
+    expectedReturn: '7',
+    duration: '10',
+  },
+];
 
 function App() {
-  const calculateHandler = (userInput: UserInput) => {
-    // Should be triggered when form is submitted
-    // You might not directly want to bind it to the submit event on the form though...
+  const [userInput, setUserInput] = useState(INITIAL_STATE);
 
-    const yearlyData = []; // per-year results
+  function inputChangeHandler(identifier: string, value: string) {
+    setUserInput(prevUserInput => {
+      return prevUserInput.map(input => {
+        switch (identifier) {
+          case 'current-savings':
+            return { ...input, currentSavings: value };
+          case 'yearly-contribution':
+            return { ...input, yearlyContribution: value };
+          case 'expected-return':
+            return { ...input, expectedReturn: value };
+          case 'duration':
+            return { ...input, duration: value };
+          default:
+            return;
+        }
+      });
+    });
+  }
 
-    let currentSavings = +userInput['current-savings']; // feel free to change the shape of this input object!
-    const yearlyContribution = +userInput['yearly-contribution']; // as mentioned: feel free to change the shape...
-    const expectedReturn = +userInput['expected-return'] / 100;
-    const duration = +userInput['duration'];
+  const [investmentData, setInvestmentData] = useState([]);
 
-    // The below code calculates yearly results (total savings, interest etc)
+  const calculateHandler = () => {
+    const yearlyData = [];
+
+    let currentSavings = parseInt(userInput[0].currentSavings);
+    const yearlyContribution = parseInt(userInput[0].yearlyContribution);
+    const expectedReturn = parseInt(userInput[0].expectedReturn) / 100;
+    const duration = parseInt(userInput[0].duration);
+
     for (let i = 0; i < duration; i++) {
       const yearlyInterest = currentSavings * expectedReturn;
       currentSavings += yearlyInterest + yearlyContribution;
+
       yearlyData.push({
-        // feel free to change the shape of the data pushed to the array!
         year: i + 1,
         yearlyInterest: yearlyInterest,
         savingsEndOfYear: currentSavings,
@@ -37,31 +57,27 @@ function App() {
       });
     }
 
-    // do something with yearlyData ...
-
-    // currency formatter
-    const formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
-    // use like this:
-    const output = formatter.format(currentSavings);
-    console.log(output); // $1,000.00
+    setInvestmentData(yearlyData);
   };
 
-  calculateHandler(dummyUserInput);
+  function InvestmentFormHandler() {
+    calculateHandler();
+  }
 
   return (
     <>
       <MainHeader />
-      <InvestmentForm />
-
-      {/* Todo: Show below table conditionally (only once result data is available) */}
-      {/* Show fallback text if no data is available */}
-      {false ? <p style={{ textAlign: 'center' }}>No investment calculated yet.</p> : <ResultsTable />}
+      <InvestmentForm
+        inputFields={userInput}
+        onInvestmentSubmit={InvestmentFormHandler}
+        onUserInput={inputChangeHandler}
+        onReset={() => setUserInput(INITIAL_STATE)}
+      />
+      {investmentData.length === 0 ? (
+        <p style={{ textAlign: 'center' }}>No investment calculated yet.</p>
+      ) : (
+        <ResultsTable results={investmentData} />
+      )}
     </>
   );
 }

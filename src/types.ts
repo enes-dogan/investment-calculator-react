@@ -1,6 +1,11 @@
 export interface UserInput {
-  'current-savings': string;
-  'yearly-contribution': string;
-  'expected-return': string;
+  currentSavings: string;
+  yearlyContribution: string;
+  expectedReturn: string;
   duration: string;
 }
+
+// export interface InvestmentFormProps {
+//   investment: UserInput;
+//   onCalculate: (userInput: UserInput) => void;
+// }

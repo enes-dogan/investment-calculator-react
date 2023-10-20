@@ -1,6 +1,29 @@
+import { useState } from 'react';
+
+import YearlyResult from './YearlyResult';
+
 import styles from './ResultsTable.module.css';
 
-const ResultsTable = () => {
+const ResultsTable = ({ results }) => {
+  const [endResult, setEndResult] = useState();
+
+  console.log(results)
+
+
+    // currency formatter
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    // use like this:
+    const output = formatter.format(value);
+    console.log(output);
+
+  // currencyFormatter(5000);
+
   return (
     <table className={styles.result}>
       <thead>
@@ -13,16 +36,19 @@ const ResultsTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>YEAR NUMBER</td>
-          <td>TOTAL SAVINGS END OF YEAR</td>
-          <td>INTEREST GAINED IN YEAR</td>
-          <td>TOTAL INTEREST GAINED</td>
-          <td>TOTAL INVESTED CAPITAL</td>
-        </tr>
+        {results.map(
+          singleResult => (
+            <YearlyResult
+            key={singleResult.year}
+            year={singleResult.year}
+            totalSavings={singleResult.savingsEndOfYear}
+            interest={singleResult.yearlyInterest}
+             />
+          )
+        )}
       </tbody>
     </table>
-  )
-}
+  );
+};
 
 export default ResultsTable;
