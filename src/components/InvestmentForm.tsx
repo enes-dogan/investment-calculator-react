@@ -1,15 +1,12 @@
-import { useState } from 'react';
-
-// import { InvestmentFormProps } from '../types';
+import { InvestmentFormProps } from '../types'
 
 import styles from './InvestmentForm.module.css';
 
-const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }) => {
-
+const InvestmentForm = ({ userInputs, onInputChange, onFormReset, onCalculate }: InvestmentFormProps) => {
 
   function submitHandler(event: React.FormEvent) {
     event.preventDefault();
-    onInvestmentSubmit();
+    onCalculate();
   }
 
   return (
@@ -21,9 +18,9 @@ const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }
             required
             type="number"
             id="current-savings"
-            value={inputFields[0].currentSavings}
+            value={userInputs.currentSavings}
             onChange={event =>
-              onUserInput('current-savings', event.target.value)
+              onInputChange('current-savings', event.target.value)
             }
           />
         </p>
@@ -33,9 +30,9 @@ const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }
             required
             type="number"
             id="yearly-contribution"
-            value={inputFields[0].yearlyContribution}
+            value={userInputs.yearlySavings}
             onChange={event =>
-              onUserInput('yearly-contribution', event.target.value)
+              onInputChange('yearly-contribution', event.target.value)
             }
           />
         </p>
@@ -49,9 +46,9 @@ const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }
             required
             type="number"
             id="expected-return"
-            value={inputFields[0].expectedReturn}
+            value={userInputs.expectedInterest}
             onChange={event =>
-              onUserInput('expected-return', event.target.value)
+              onInputChange('expected-return', event.target.value)
             }
           />
         </p>
@@ -61,9 +58,9 @@ const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }
             required
             type="number"
             id="duration"
-            value={inputFields[0].duration}
+            value={userInputs.investmentDuration}
             onChange={event =>
-              onUserInput('duration', event.target.value)
+              onInputChange('duration', event.target.value)
             }
           />
         </p>
@@ -72,7 +69,7 @@ const InvestmentForm = ({inputFields, onInvestmentSubmit, onUserInput, onReset }
         <button
           type="reset"
           className={styles.buttonAlt}
-          onClick={onReset}
+          onClick={() => onFormReset()}
         >
           Reset
         </button>

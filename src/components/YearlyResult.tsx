@@ -1,18 +1,16 @@
-import React from 'react'
-
-const YearlyResult = ({ year, totalSavings, interest }) => {
+import { YearlyResultProps } from '../types';
 
 
-
+const YearlyResult = ({ investment }: YearlyResultProps) => {
   return (
     <tr>
-      <td>{year}</td>
-      <td>{totalSavings}</td>
-      <td>INTEREST GAINED IN YEAR</td>
-      <td>{interest}</td>
-      <td>TOTAL INVESTED CAPITAL</td>
+      <td>{investment.year}</td>
+      <td>{investment.savingsEndOfYear}</td>
+      <td>{investment.yearlyInterest}</td>
+      <td>{0}</td>
+      <td>{investment.yearlyContribution}</td>
     </tr>
-  )
-}
+  );
+};
 
-export default YearlyResult
+export default YearlyResult;

@@ -4,79 +4,86 @@ import InvestmentForm from './components/InvestmentForm';
 import MainHeader from './components/MainHeader';
 import ResultsTable from './components/ResultsTable';
 
-const INITIAL_STATE = [
-  {
-    currentSavings: '10000',
-    yearlyContribution: '1200',
-    expectedReturn: '7',
-    duration: '10',
-  },
-];
+import { InvestmentData } from './types';
+
+const initialState = {
+  currentSavings: '10000',
+  yearlySavings: '1200',
+  expectedInterest: '7',
+  investmentDuration: '10',
+};
 
 function App() {
-  const [userInput, setUserInput] = useState(INITIAL_STATE);
+  const [investmentValues, setInvestmentValues] = useState(initialState);
+  const [yearlyData, setYearlyData] = useState<InvestmentData[]>([]);
 
-  function inputChangeHandler(identifier: string, value: string) {
-    setUserInput(prevUserInput => {
-      return prevUserInput.map(input => {
-        switch (identifier) {
-          case 'current-savings':
-            return { ...input, currentSavings: value };
-          case 'yearly-contribution':
-            return { ...input, yearlyContribution: value };
-          case 'expected-return':
-            return { ...input, expectedReturn: value };
-          case 'duration':
-            return { ...input, duration: value };
-          default:
-            return;
-        }
-      });
-    });
+  function investmentValueChangeHandler(idf: string, value: string) {
+    switch (idf) {
+      case 'current-savings':
+        setInvestmentValues(prevInputs => {
+          return { ...prevInputs, currentSavings: value };
+        });
+        break;
+      case 'yearly-contribution':
+        setInvestmentValues(prevInputs => {
+          return { ...prevInputs, yearlySavings: value };
+        });
+        break;
+      case 'expected-return':
+        setInvestmentValues(prevInputs => {
+          return { ...prevInputs, expectedInterest: value };
+        });
+        break;
+      case 'duration':
+        setInvestmentValues(prevInputs => {
+          return { ...prevInputs, investmentDuration: value };
+        });
+        break;
+      default:
+        break;
+    }
   }
 
-  const [investmentData, setInvestmentData] = useState([]);
-
   const calculateHandler = () => {
-    const yearlyData = [];
+    let currentSavings = +investmentValues.currentSavings;
+    const yearlyContribution = +investmentValues.yearlySavings;
+    const expectedReturn = +investmentValues.expectedInterest / 100;
+    const duration = +investmentValues.investmentDuration;
 
-    let currentSavings = parseInt(userInput[0].currentSavings);
-    const yearlyContribution = parseInt(userInput[0].yearlyContribution);
-    const expectedReturn = parseInt(userInput[0].expectedReturn) / 100;
-    const duration = parseInt(userInput[0].duration);
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
+    const newYearlyData: InvestmentData[] = [];
     for (let i = 0; i < duration; i++) {
       const yearlyInterest = currentSavings * expectedReturn;
       currentSavings += yearlyInterest + yearlyContribution;
-
-      yearlyData.push({
+      newYearlyData.push({
         year: i + 1,
-        yearlyInterest: yearlyInterest,
-        savingsEndOfYear: currentSavings,
-        yearlyContribution: yearlyContribution,
+        yearlyInterest: formatter.format(yearlyInterest),
+        savingsEndOfYear: formatter.format(currentSavings),
+        yearlyContribution: formatter.format(+investmentValues.currentSavings + yearlyContribution),
       });
     }
-
-    setInvestmentData(yearlyData);
+    setYearlyData(newYearlyData);
   };
-
-  function InvestmentFormHandler() {
-    calculateHandler();
-  }
 
   return (
     <>
       <MainHeader />
       <InvestmentForm
-        inputFields={userInput}
-        onInvestmentSubmit={InvestmentFormHandler}
-        onUserInput={inputChangeHandler}
-        onReset={() => setUserInput(INITIAL_STATE)}
+        userInputs={investmentValues}
+        onInputChange={investmentValueChangeHandler}
+        onCalculate={calculateHandler}
+        onFormReset={() => setInvestmentValues(initialState)}
       />
-      {investmentData.length === 0 ? (
+      {yearlyData.length === 0 ? (
         <p style={{ textAlign: 'center' }}>No investment calculated yet.</p>
       ) : (
-        <ResultsTable results={investmentData} />
+        <ResultsTable investmentsByYear={yearlyData} />
       )}
     </>
   );
