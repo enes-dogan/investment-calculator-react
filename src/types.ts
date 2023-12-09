@@ -5,22 +5,17 @@ export interface UserInputsType {
   duration: number;
 }
 
-type InvestmentResult = {
-  year: number;
-  interest: number;
-  valueEndOfYear: number;
-  totalInterest: number;
-  annualInvestment: number;
-};
-
-export type annualDataArrayTypes = InvestmentResult;
-[];
-
 export interface UserInputProps {
-  inputs: UserInputsType;
-  onUpdate: (updatedInputs: string, value: number) => void;
+  userInputs: UserInputsType;
+  onUpdate: (updatedInputs: string, value: string) => void;
 }
 
 export interface ResultsProps {
-  result: annualDataArrayTypes;
+  result: {
+    year: number;
+    interest: number;
+    valueEndOfYear: number;
+    totalInterest: number;
+    annualInvestment: number;
+  }[];
 }

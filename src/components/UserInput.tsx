@@ -1,7 +1,9 @@
 import { UserInputProps } from '../types';
-export default function UserInput({ inputs, onUpdate }: UserInputProps) {
+
+export default function UserInput({ userInputs, onUpdate }: UserInputProps) {
   const { initialInvestment, annualInvestment, expectedReturn, duration } =
-    inputs;
+    userInputs;
+
   return (
     <section id="user-input">
       <div className="input-group">
@@ -10,9 +12,7 @@ export default function UserInput({ inputs, onUpdate }: UserInputProps) {
           <input
             type="number"
             value={initialInvestment}
-            onChange={e =>
-              onUpdate('initialInvestment', parseInt(e.target.value))
-            }
+            onChange={e => onUpdate('initialInvestment', e.target.value)}
           />
         </p>
         <p>
@@ -20,20 +20,17 @@ export default function UserInput({ inputs, onUpdate }: UserInputProps) {
           <input
             type="number"
             value={annualInvestment}
-            onChange={e =>
-              onUpdate('annualInvestment', parseInt(e.target.value))
-            }
+            onChange={e => onUpdate('annualInvestment', e.target.value)}
           />
         </p>
       </div>
-
       <div className="input-group">
         <p>
           <label>Expected Return</label>
           <input
             type="number"
             value={expectedReturn}
-            onChange={e => onUpdate('expectedReturn', parseInt(e.target.value))}
+            onChange={e => onUpdate('expectedReturn', e.target.value)}
           />
         </p>
         <p>
@@ -41,7 +38,7 @@ export default function UserInput({ inputs, onUpdate }: UserInputProps) {
           <input
             type="number"
             value={duration}
-            onChange={e => onUpdate('duration', parseInt(e.target.value))}
+            onChange={e => onUpdate('duration', e.target.value)}
           />
         </p>
       </div>

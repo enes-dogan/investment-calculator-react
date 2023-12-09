@@ -1,11 +1,5 @@
 import { UserInputsType } from '../types';
 
-// This function expects a JS object as an argument
-// The object should contain the following properties
-// - initialInvestment: The initial investment amount
-// - annualInvestment: The amount invested every year
-// - expectedReturn: The expected (annual) rate of return
-// - duration: The investment duration (time frame)
 export function calculateInvestmentResults({
   initialInvestment,
   annualInvestment,
@@ -26,7 +20,7 @@ export function calculateInvestmentResults({
       valueEndOfYear: investmentValue, // investment value at end of year
       totalInterest: totalInterest, // total interest earned so far
       annualInvestment:
-        annualInvestment + initialInvestment + annualInvestment * i, // investment added in this year
+        annualInvestment + initialInvestment + annualInvestment * i, // sum of all investments made so far
     });
   }
 

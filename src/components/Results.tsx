@@ -2,20 +2,28 @@ import { ResultsProps } from '../types';
 import { formatter } from '../util/investment';
 
 export default function Results({ result }: ResultsProps) {
-  const formatInvestmentValue = formatter.format(result.valueEndOfYear);
-  const formatInterest = formatter.format(result.interest);
-  const formatCapital = formatter.format(result.annualInvestment);
-  const formatTotal = formatter.format(result.totalInterest);
-
   return (
-    <tbody>
-      <tr>
-        <td>{result.year}</td>
-        <td>{formatInvestmentValue}</td>
-        <td>{formatInterest}</td>
-        <td>{formatTotal}</td>
-        <td>{formatCapital}</td>
-      </tr>
-    </tbody>
+    <table id="result">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Investment Value</th>
+          <th>Interest (Year)</th>
+          <th>Total Interest</th>
+          <th>Invested Capital</th>
+        </tr>
+      </thead>
+      {result.map(yearlyInvestment => (
+        <tbody>
+          <tr>
+            <td>{yearlyInvestment.year}</td>
+            <td>{formatter.format(yearlyInvestment.valueEndOfYear)}</td>
+            <td>{formatter.format(yearlyInvestment.interest)}</td>
+            <td>{formatter.format(yearlyInvestment.totalInterest)}</td>
+            <td>{formatter.format(yearlyInvestment.annualInvestment)}</td>
+          </tr>
+        </tbody>
+      ))}
+    </table>
   );
 }
